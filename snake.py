@@ -1,3 +1,5 @@
+#!/usr/bin/python2
+
 from graphics import *
 import time
 
