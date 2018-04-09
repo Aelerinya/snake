@@ -34,36 +34,39 @@ def main () :
         if lose == False :
             input = win.checkKey()
 
-            #change direction
-            if input == 'Up' :
-                dir = 0
-            elif input == 'Down' :
-                dir = 1
-            elif input == 'Left' :
-                dir = 2
-            elif input == 'Right' :
-                dir = 3
+            # check if the new direction is the opposite of the current one
+            if (input == "Up" and dir == 1) or (input == "Down" and dir == 0) or (input == "Left" and dir == 3) or (input == "Right" and dir == 2):
+                print("opposite direction!")
+            else:
+                #change direction
+                if input == 'Up' :
+                    dir = 0
+                elif input == 'Down' :
+                    dir = 1
+                elif input == 'Left' :
+                    dir = 2
+                elif input == 'Right' :
+                    dir = 3
+                #Update position based on direction
+                if dir == 0 :
+                    posY -= size
+                elif dir == 1 :
+                    posY += size
+                elif dir == 2 :
+                    posX -= size
+                elif dir == 3 :
+                    posX += size
 
-            #Update position based on direction
-            if dir == 0 :
-                posY -= size
-            elif dir == 1 :
-                posY += size
-            elif dir == 2 :
-                posX -= size
-            elif dir == 3 :
-                posX += size
-
-            #Check colision
-            if posX < 0 or posX+size > width or posY < 0 or posY+size > height :
-                lose = True
-            else :
-                newRect = Rectangle(Point(posX, posY), Point(posX+size, posY+size))
-                newRect.setFill('white')
-                newRect.draw(win)
-                snake.append(newRect)
-                snake[0].undraw()
-                snake.pop(0)
+                #Check colision
+                if posX < 0 or posX+size > width or posY < 0 or posY+size > height :
+                    lose = True
+                else :
+                    newRect = Rectangle(Point(posX, posY), Point(posX+size, posY+size))
+                    newRect.setFill('white')
+                    newRect.draw(win)
+                    snake.append(newRect)
+                    snake[0].undraw()
+                    snake.pop(0)
 
 
 
