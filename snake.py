@@ -1,38 +1,66 @@
 from graphics import *
 import time
+import random
 
 def main () :
-    width = 640
-    height = 480
+    #Create cells Grid
+    rows = 48
+    columns = 64
+    cellSize = 10
+    Grid = [[0 for x in range(columns)] for y in range(rows)]
+
+    #Create window
+    width = columns * cellSize
+    height = rows * cellSize
     win = GraphWin("Snake", width, height)
 
+    #Put black background
     background = Rectangle(Point(0, 0), Point(width, height))
     background.setFill('black')
     background.draw(win)
 
-    posX = 100
-    posY = 100
+    #Starting parameters
+    posX = 25
+    posY = 10
     dir = 3
     text = ''
     quit = False
     lose = False
-    size = 10
+    length = 4
+    snake = []
+    ateThisTurn = False
+    score = 0
 
-    rect1 = Rectangle(Point(posX, posY), Point(posX+size, posY+size))
-    rect2 = Rectangle(Point(posX-size, posY), Point(posX, posY+size))
-    rect3 = Rectangle(Point(posX-2*size, posY), Point(posX-size, posY+size))
-    rect4 = Rectangle(Point(posX-3*size, posY), Point(posX-2*size, posY+size))
+    #Food class
+    class newFood :
+        def __init__ (self):
+            self.posX = random.randint(0, columns-1)
+            self.posY = random.randint(0, rows-1)
+            Grid[self.posY][self.posX] = 2
+            self.rect = Rectangle(Point(self.posX*cellSize, self.posY*cellSize), Point((self.posX+1)*cellSize, (self.posY+1)*cellSize))
+            self.rect.setFill('red')
+            self.rect.draw(win)
+        def destroy (self) :
+            self.rect.undraw()
+            Grid[self.posY][self.posX] = 0
 
-    snake = [rect4, rect3, rect2, rect1]
-    for rect in snake :
+    #First Food
+    food = newFood()
+
+    #Set initial blocks for snake
+    for i in range(0, length) :
+        rect = Rectangle(Point((posX-i)*cellSize, posY*cellSize), Point((posX-i+1)*cellSize, (posY+1)*cellSize))
         rect.setFill('white')
         rect.draw(win)
+        snake.insert(0, rect)
+        Grid[posY][posX-i] = 1
 
     while quit == False :
         if lose == False :
+            #Get the pressed key
             input = win.checkKey()
 
-            #change direction
+            #Change direction
             if input == 'Up' :
                 dir = 0
             elif input == 'Down' :
@@ -44,40 +72,60 @@ def main () :
 
             #Update position based on direction
             if dir == 0 :
-                posY -= size
+                posY -= 1
             elif dir == 1 :
-                posY += size
+                posY += 1
             elif dir == 2 :
-                posX -= size
+                posX -= 1
             elif dir == 3 :
-                posX += size
+                posX += 1
 
-            #Check colision
-            if posX < 0 or posX+size > width or posY < 0 or posY+size > height :
+            #Check colision with walls or itself
+            if posX < 0 or posX+1 > columns or posY < 0 or posY+1 > rows or Grid[posY][posX] == 1 :
                 lose = True
+            #Move snake if no collision
             else :
-                newRect = Rectangle(Point(posX, posY), Point(posX+size, posY+size))
+                #Check if eating the food
+                if Grid[posY][posX] == 2 :
+                    ateThisTurn = True
+                    food.destroy()
+                    food = newFood()
+                    length += 1
+                    score += 1
+
+                #Create new rectangle
+                newRect = Rectangle(Point(posX*cellSize, posY*cellSize), Point((posX+1)*cellSize, (posY+1)*cellSize))
                 newRect.setFill('white')
                 newRect.draw(win)
                 snake.append(newRect)
-                snake[0].undraw()
-                snake.pop(0)
+                #Update Grid
+                Grid[posY][posX] = 1
+
+                if ateThisTurn :
+                    ateThisTurn = False
+                else :
+                    #Remove last rectangle from snake
+                    snake[0].undraw()
+                    Grid[int(snake[0].getP1().getY()/cellSize)][int(snake[0].getP1().getX()//cellSize)] = 0
+                    snake.pop(0)
 
 
-
+        #You just lost the game ;)
         if lose == True :
+            #Undraw snake and food
+            food.destroy()
             for rect in snake :
                 rect.undraw()
-
+            #Display You lost and wait for a keypress to quit
             message = Text(Point(width/2, height/2),"You lost")
             message.setFill('white')
             message.draw(win)
+            scoreMsg = Text(Point(width/2, height/2+15),"Your score : "+str(score))
+            scoreMsg.setFill('white')
+            scoreMsg.draw(win)
             win.getKey()
             quit = True
 
         time.sleep(1.0/10)
-
-    #win.getMouse()
-    #win.close()
 
 main()
