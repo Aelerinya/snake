@@ -30,6 +30,7 @@ def main () :
     snake = []
     ateThisTurn = False
     score = 0
+    Time=10
 
     #Food class
     class newFood :
@@ -92,6 +93,7 @@ def main () :
                     food = newFood()
                     length += 1
                     score += 1
+                    Time=Time*1.01
 
                 #Create new rectangle
                 newRect = Rectangle(Point(posX*cellSize, posY*cellSize), Point((posX+1)*cellSize, (posY+1)*cellSize))
@@ -126,6 +128,6 @@ def main () :
             win.getKey()
             quit = True
 
-        time.sleep(1.0/10)
+        time.sleep(1.0/Time)
 
 main()
