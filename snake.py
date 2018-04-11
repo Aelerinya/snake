@@ -61,13 +61,13 @@ def main () :
             input = win.checkKey()
 
             #Change direction
-            if input == 'Up' :
+            if input == 'Up' and dir!=1:
                 dir = 0
-            elif input == 'Down' :
+            elif input == 'Down' and dir!=0:
                 dir = 1
-            elif input == 'Left' :
+            elif input == 'Left' and dir!=3:
                 dir = 2
-            elif input == 'Right' :
+            elif input == 'Right' and dir!=2:
                 dir = 3
 
             #Update position based on direction
