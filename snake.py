@@ -34,8 +34,13 @@ def main () :
     #Food class
     class newFood :
         def __init__ (self):
-            self.posX = random.randint(0, columns-1)
-            self.posY = random.randint(0, rows-1)
+            while True :
+                self.posX = random.randint(0, columns-1)
+                self.posY = random.randint(0, rows-1)
+                #Regenerate position if cell already occupied by cell
+                if (Grid[self.posY][self.posY] == 0) :
+                    break
+
             Grid[self.posY][self.posX] = 2
             self.rect = Rectangle(Point(self.posX*cellSize, self.posY*cellSize), Point((self.posX+1)*cellSize, (self.posY+1)*cellSize))
             self.rect.setFill('red')
